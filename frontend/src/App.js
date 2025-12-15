@@ -1,49 +1,57 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/login'; // Halaman login yang sudah dibuat
-import PublicLayout from './layouts/publicLayout'; // Layout dasar
-// Import komponen-komponen yang belum dibuat (hanya untuk routing)
+
+// --- IMPORT HALAMAN (PAGES) ---
+import LoginPage from './pages/login'; 
+import RegisterPage from './pages/register'; // <--- PENTING: Ini yang sebelumnya kurang
 import DashboardAdmin from './pages/superadmin/dashboard';
 import DashboardTakmir from './pages/takmir/dashboard';
 
-// Import Middleware Proteksi Route (Belum dibuat, ini hanya placeholder)
-// const PrivateRoute = ({ children, role }) => { /* ... logika proteksi */ return children; }; 
+// --- IMPORT LAYOUT ---
+import PublicLayout from './layouts/publicLayout'; 
 
 function App() {
   return (
     <Routes>
       
       {/* ======================= PUBLIC ROUTES ======================= */}
-      {/* Route Login */}
+      {/* Route untuk Login & Register */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       
-      {/* Route Halaman Publik/Warga */}
-      <Route path="/" element={<PublicLayout><p>Halaman Beranda Publik</p></PublicLayout>} />
+      {/* Route Halaman Utama (Beranda) */}
+      <Route path="/" element={
+        <PublicLayout>
+          {/* Konten Beranda sementara */}
+          <div className="text-center">
+            <h2>Selamat Datang di Sistem Manajemen Masjid</h2>
+            <p>Silakan Login untuk masuk ke dashboard.</p>
+          </div>
+        </PublicLayout>
+      } />
 
       {/* ======================= SUPER ADMIN ROUTES ======================= */}
       <Route 
         path="/superadmin/dashboard" 
-        element={
-          // <PrivateRoute role="superadmin"> // Tambahkan ini setelah middleware dibuat
-            <DashboardAdmin />
-          // </PrivateRoute>
-        } 
+        element={<DashboardAdmin />} 
       />
-      {/* Tambahkan route Super Admin lainnya di sini (e.g., /superadmin/masjid) */}
 
       {/* ======================= TAKMIR ROUTES ======================= */}
       <Route 
         path="/takmir/dashboard" 
-        element={
-          // <PrivateRoute role="takmir"> // Tambahkan ini setelah middleware dibuat
-            <DashboardTakmir />
-          // </PrivateRoute>
-        } 
+        element={<DashboardTakmir />} 
       />
-      {/* Tambahkan route Takmir lainnya di sini (e.g., /takmir/keuangan) */}
       
-      {/* ======================= 404/NOT FOUND ======================= */}
-      <Route path="*" element={<PublicLayout><h1>404 | Halaman Tidak Ditemukan</h1></PublicLayout>} />
+      {/* ======================= 404 / NOT FOUND ======================= */}
+      {/* Menangani jika user membuka link yang tidak ada */}
+      <Route path="*" element={
+        <PublicLayout>
+          <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <h1 style={{ color: 'red' }}>404</h1>
+            <h3>Halaman Tidak Ditemukan</h3>
+          </div>
+        </PublicLayout>
+      } />
 
     </Routes>
   );
