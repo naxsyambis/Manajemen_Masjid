@@ -5,7 +5,7 @@ import LoginPage from './pages/login';
 import RegisterPage from './pages/register'; // <--- PENTING: Ini yang sebelumnya kurang
 import DashboardAdmin from './pages/superadmin/dashboard';
 import DashboardTakmir from './pages/takmir/dashboard';
-import CreateTakmir from './pages/superadmin/CreateTakmir';
+import CreateTakmir from './pages/superadmin/createTakmir';
 
 // --- IMPORT LAYOUT ---
 import PublicLayout from './layouts/publicLayout'; 
