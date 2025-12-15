@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
+// Perubahan: Naik 2 level untuk mencari hooks
+import { useAuth } from '../../hooks/useAuth'; 
 import { useNavigate, Link } from 'react-router-dom';
-import './auth.css';
+
 
 const RegisterPage = () => {
   const { register } = useAuth();
@@ -35,7 +36,6 @@ const RegisterPage = () => {
     try {
         const result = await register(formData);
         
-        // Asumsi: jika berhasil, result tidak error
         if (result) {
             setSuccess('Registrasi berhasil! Silakan login.');
             setTimeout(() => navigate('/login'), 2000);
@@ -78,7 +78,6 @@ const RegisterPage = () => {
             </select>
           </div>
 
-          {/* Field khusus Takmir */}
           {formData.role === 'takmir' && (
               <div className="form-group">
                 <label>ID Masjid (Manual Input)</label>

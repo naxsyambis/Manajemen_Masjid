@@ -1,0 +1,10 @@
+/* Mengatur font default agar terlihat modern */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f6fa; /* Warna abu-abu sangat muda */
+}
+
+/* Helper agar link tidak ada garis bawah */
+a {
+  text-decoration: none;
+}

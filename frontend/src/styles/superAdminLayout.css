@@ -1,0 +1,41 @@
+/* Sidebar yang diam di kiri */
+.sidebar {
+    min-height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: #212529; /* Dark Bootstrap Color */
+    color: white;
+    transition: all 0.3s;
+}
+
+/* Area konten utama didorong ke kanan */
+.main-content {
+    margin-left: 250px; /* Sesuai lebar sidebar */
+    padding: 20px;
+    width: calc(100% - 250px);
+    min-height: 100vh;
+}
+
+/* Styling Link di Sidebar */
+.sidebar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    padding: 15px 20px;
+    display: block;
+    border-radius: 4px;
+    margin: 0 10px;
+}
+
+.sidebar-nav .nav-link:hover, 
+.sidebar-nav .nav-link.active {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive: Jika layar HP, sidebar hilang/kecil (opsional) */
+@media (max-width: 768px) {
+    .sidebar { margin-left: -250px; }
+    .main-content { margin-left: 0; width: 100%; }
+}

@@ -1,29 +1,32 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-// --- IMPORT HALAMAN (PAGES) ---
-import LoginPage from './pages/login'; 
-import RegisterPage from './pages/register'; 
-import DashboardAdmin from './pages/superadmin/dashboard';
-import DashboardTakmir from './pages/takmir/dashboard';
-// Perbaikan: Ubah path menjadi huruf kecil sesuai nama file asli
-import CreateTakmir from './pages/superadmin/createTakmir'; 
-
 // --- IMPORT LAYOUT ---
 import PublicLayout from './layouts/publicLayout'; 
-// Perbaikan: Tambahkan import SuperAdminLayout agar tidak error blank
 import SuperAdminLayout from './layouts/superAdminLayout'; 
-import './pages/auth.css';
+
+// --- IMPORT HALAMAN (PAGES) ---
+// Perubahan: Mengarah ke folder 'auth'
+import LoginPage from './pages/auth/login'; 
+import RegisterPage from './pages/auth/register'; 
+
+// Halaman Super Admin
+import DashboardAdmin from './pages/superadmin/dashboard';
+import CreateTakmir from './pages/superadmin/createTakmir'; 
+
+// Halaman Takmir
+import DashboardTakmir from './pages/takmir/dashboard';
 
 function App() {
   return (
     <Routes>
       
       {/* ======================= PUBLIC ROUTES ======================= */}
+      {/* Halaman Login & Register */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       
-      {/* Route Halaman Utama (Landing Page) */}
+      {/* Halaman Utama (Landing Page) */}
       <Route path="/" element={
         <PublicLayout>
           <div className="text-center">
@@ -34,15 +37,9 @@ function App() {
       } />
 
       {/* ======================= SUPER ADMIN ROUTES ======================= */}
-      {/* Semua route di dalam sini otomatis pakai Sidebar & Header Admin */}
       <Route path="/superadmin" element={<SuperAdminLayout />}>
-          {/* Dashboard Utama: /superadmin/dashboard */}
           <Route path="dashboard" element={<DashboardAdmin />} />
-          
-          {/* Manajemen User: /superadmin/users */}
           <Route path="users" element={<CreateTakmir />} />
-          
-          {/* Data Masjid: /superadmin/masjid */}
           <Route path="masjid" element={<div>Halaman Data Masjid (Coming Soon)</div>} />
       </Route>
 
