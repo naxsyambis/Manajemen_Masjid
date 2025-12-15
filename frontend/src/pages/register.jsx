@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import PublicLayout from '../layouts/publicLayout';
 import { useNavigate } from 'react-router-dom';
+import './auth.css';
 
 const RegisterPage = () => {
   const { register } = useAuth();
