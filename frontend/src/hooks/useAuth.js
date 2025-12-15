@@ -1,63 +1,93 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { login as loginApi, logout as logoutApi, getCurrentUser } from '../api/auth.api';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { loginAPI, registerAPI } from "../api/auth.api";
+import { useNavigate } from "react-router-dom";
 
-// 1. Definisikan Context
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
-// 2. Definisikan Provider
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null); // Menyimpan data user (termasuk role & masjidId)
-    const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Untuk cek login saat refresh
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        // Cek Local Storage saat komponen mount
-        const storedUser = getCurrentUser();
-        if (storedUser) {
-            setUser(storedUser);
-        }
-        setIsLoading(false);
-    }, []);
+  // Cek apakah user sudah login saat aplikasi pertama kali dibuka (Reload page)
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
 
-    // Fungsi untuk proses login
-    const login = async (email, password) => {
-        setIsLoading(true);
-        try {
-            const userData = await loginApi(email, password);
-            setUser(userData);
-            setIsLoading(false);
-            return userData; // Mengembalikan data user untuk keperluan redirect
-        } catch (error) {
-            setUser(null);
-            setIsLoading(false);
-            throw error;
-        }
-    };
+    if (savedUser && token) {
+      setUser(JSON.parse(savedUser));
+    }
+    setLoading(false);
+  }, []);
 
-    // Fungsi untuk proses logout
-    const logout = () => {
-        logoutApi();
-        setUser(null);
-    };
+  // Fungsi Login
+  const login = async (email, password) => {
+    try {
+      const response = await loginAPI(email, password);
+      const data = response.data;
 
-    // Objek value yang akan disediakan oleh Context
-    const value = {
-        user,
-        isAuthenticated: !!user, // true jika user tidak null
-        isSuperAdmin: user && user.role === 'super admin',
-        isTakmir: user && user.role === 'takmir',
-        isLoading,
-        login,
-        logout,
-    };
+      // Simpan data penting ke LocalStorage & State
+      localStorage.setItem("token", data.accessToken);
+      
+      // Buat object user yang bersih (tanpa token di dalamnya)
+      const userData = {
+        user_id: data.user_id,
+        nama: data.nama,
+        email: data.email,
+        role: data.role,
+        masjidId: data.masjidId
+      };
+      
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
 
-    return (
-        <AuthContext.Provider value={value}>
-            {children}
-        </AuthContext.Provider>
-    );
+      // Redirect berdasarkan Role
+      if (data.role === "super admin") {
+        navigate("/superadmin/dashboard");
+      } else if (data.role === "takmir") {
+        navigate("/takmir/dashboard");
+      } else {
+        navigate("/"); // Default ke home
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Login Failed:", error);
+      return { 
+        success: false, 
+        message: error.response?.data?.message || "Login gagal. Periksa koneksi atau kredensial Anda." 
+      };
+    }
+  };
+
+  // Fungsi Register (Opsional / Untuk Testing)
+  const register = async (formData) => {
+    try {
+      await registerAPI(formData);
+      return { success: true };
+    } catch (error) {
+      return { 
+        success: false, 
+        message: error.response?.data?.message || "Registrasi gagal." 
+      };
+    }
+  };
+
+  // Fungsi Logout
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login");
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout, register, loading }}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 };
 
-// 3. Custom Hook untuk Konsumsi Context
 export const useAuth = () => {
-    return useContext(AuthContext);
+  return useContext(AuthContext);
 };
