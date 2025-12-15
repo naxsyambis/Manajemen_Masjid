@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import './SuperAdminLayout.css'; // Kita akan buat CSS-nya setelah ini
+import './superAdminLayout.css'; // Kita akan buat CSS-nya setelah ini
 
 const SuperAdminLayout = () => {
   const { logout, user } = useAuth();
