@@ -5,7 +5,7 @@ import LoginPage from './pages/login';
 import RegisterPage from './pages/register'; // <--- PENTING: Ini yang sebelumnya kurang
 import DashboardAdmin from './pages/superadmin/dashboard';
 import DashboardTakmir from './pages/takmir/dashboard';
-
+import CreateTakmir from './pages/superadmin/CreateTakmir';
 
 // --- IMPORT LAYOUT ---
 import PublicLayout from './layouts/publicLayout'; 
@@ -14,6 +14,18 @@ import './pages/auth.css';
 function App() {
   return (
     <Routes>
+      {/* ======================= SUPER ADMIN ROUTES ======================= */}
+      <Route path="/superadmin" element={<SuperAdminLayout />}>
+          {/* Index route = Dashboard Utama */}
+          <Route path="dashboard" element={<DashboardAdmin />} />
+          
+          {/* Route Manajemen User / Buat Akun */}
+          <Route path="users" element={<CreateTakmir />} />
+          
+          {/* Route Data Masjid (Nanti bisa ditambahkan) */}
+          <Route path="masjid" element={<div>Halaman Data Masjid (Coming Soon)</div>} />
+      </Route>
+
       
       {/* ======================= PUBLIC ROUTES ======================= */}
       {/* Route untuk Login & Register */}
