@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
+import './auth.css';
 
 const RegisterPage = () => {
   const { register } = useAuth();
