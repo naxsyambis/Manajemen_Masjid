@@ -1,0 +1,47 @@
+/* Container utama: Mengatur posisi di tengah layar (Vertikal & Horizontal) */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa; /* Warna bg-light */
+}
+
+/* Kartu Login */
+.login-card {
+    width: 100%;
+    max-width: 400px; /* Batas lebar kartu */
+    border: none;     /* Hilangkan border bawaan */
+    border-radius: 12px; /* Sudut membulat */
+    background-color: white;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important; /* Efek bayangan */
+    padding: 2rem;    /* Jarak dalam */
+}
+
+/* Judul dan Subjudul */
+.login-title {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.login-subtitle {
+    text-align: center;
+    color: #6c757d; /* Warna text-muted */
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+}
+
+/* Tombol Custom */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.3s;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px); /* Efek naik sedikit saat di-hover */
+}

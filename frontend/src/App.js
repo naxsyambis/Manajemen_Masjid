@@ -1,14 +1,13 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 // --- IMPORT LAYOUT ---
-import PublicLayout from './layouts/publicLayout'; 
 import SuperAdminLayout from './layouts/superAdminLayout'; 
+import PublicLayout from './layouts/publicLayout';
 
 // --- IMPORT HALAMAN (PAGES) ---
-// Perubahan: Mengarah ke folder 'auth'
 import LoginPage from './pages/auth/login'; 
-import RegisterPage from './pages/auth/register'; 
+// RegisterPage kita hapus importnya karena tidak dipakai di publik lagi
 
 // Halaman Super Admin
 import DashboardAdmin from './pages/superadmin/dashboard';
@@ -21,21 +20,14 @@ function App() {
   return (
     <Routes>
       
-      {/* ======================= PUBLIC ROUTES ======================= */}
-      {/* Halaman Login & Register */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      
-      {/* Halaman Utama (Landing Page) */}
-      <Route path="/" element={
-        <PublicLayout>
-          <div className="text-center">
-            <h2>Selamat Datang di Sistem Manajemen Masjid</h2>
-            <p>Silakan Login untuk mengakses dashboard.</p>
-          </div>
-        </PublicLayout>
-      } />
+      {/* ======================= REDIRECT ROOT ======================= */}
+      {/* Jika buka halaman awal, langsung paksa ke /login */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
+      {/* ======================= PUBLIC ROUTES ======================= */}
+      <Route path="/login" element={<LoginPage />} />
+      {/* Route Register dihapus */}
+      
       {/* ======================= SUPER ADMIN ROUTES ======================= */}
       <Route path="/superadmin" element={<SuperAdminLayout />}>
           <Route path="dashboard" element={<DashboardAdmin />} />
@@ -49,8 +41,8 @@ function App() {
       {/* ======================= 404 / NOT FOUND ======================= */}
       <Route path="*" element={
         <PublicLayout>
-          <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1 style={{ color: 'red' }}>404</h1>
+          <div className="container text-center mt-5">
+            <h1 className="display-1 text-danger">404</h1>
             <h3>Halaman Tidak Ditemukan</h3>
           </div>
         </PublicLayout>
