@@ -43,6 +43,7 @@ Buat folder kosong di komputer (bebas namanya).
 ### 2️⃣ Buka Folder di Visual Studio Code
 - Klik kanan folder → **Open with Code**
 - Atau buka VS Code → **File → Open Folder**
+- Atau buka **folder kosong -> cmd -> code .**
 
 ---
 
@@ -117,7 +118,7 @@ http://localhost/phpmyadmin
 ### 3️⃣ Buat Database Baru
 
 1. Klik **New**
-2. Masukkan **nama database**
+2. Masukkan **database: 'mana_masjid**
 3. Klik **Create**
 
 ---
@@ -186,15 +187,4 @@ Kerja tim yang baik membutuhkan:
 * Disiplin dalam melakukan **pull & push**
 * Koordinasi sebelum mengedit file yang sama
 
-Dengan mengikuti panduan ini, konflik kode dapat diminimalkan dan project dapat berjalan dengan lancar 🚀
 
-```
-
----
-
-Kalau README ini **MASIH kamu bilang salah**, bilang saja:
-- ❌ anchor mana yang tidak jalan  
-- ❌ bagian mana yang mau ditambah (Docker? env? .env example?)
-
-Aku betulin **sekali jalan**, tanpa drama.
-```
