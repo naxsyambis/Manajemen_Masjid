@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 // --- IMPORT LAYOUT ---
 import SuperAdminLayout from './layouts/superAdminLayout'; 
 import PublicLayout from './layouts/publicLayout';
+import CreateTakmir from './pages/superadmin/createTakmir';
 
 // --- IMPORT HALAMAN (PAGES) ---
 import LoginPage from './pages/auth/login'; 

@@ -13,7 +13,6 @@ exports.login = async (req, res) => {
     }
 
     try {
-        // PERBAIKAN: HAPUS 'u.masjid_id' dari SELECT karena kolom itu tidak ada di tabel user_app
         const [rows] = await db.execute(
             `SELECT 
                 u.user_id, u.nama, u.email, u.password, u.role, u.foto_tanda_tangan 
@@ -28,27 +27,22 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: "Email tidak ditemukan." });
         }
 
-        // Cek Password
         const passwordIsValid = await bcrypt.compare(password, user.password);
 
         if (!passwordIsValid) {
             return res.status(401).json({ message: "Password salah." });
         }
 
-        // Payload Token
         const tokenPayload = {
             id: user.user_id,
             role: user.role,
-            // Kita set null dulu karena masjid_id tidak ada di tabel user_app
-            // Nanti jika butuh, harus di-query dari tabel 'masjid_takmir'
             masjidId: null 
         };
 
         const token = jwt.sign(tokenPayload, jwtSecret, {
-            expiresIn: 86400 // 24 jam
+            expiresIn: 86400 
         });
 
-        // Kirim Respons Sukses
         res.status(200).json({
             user_id: user.user_id,
             nama: user.nama,
@@ -60,16 +54,15 @@ exports.login = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Login Error:", error); // Cek terminal VS Code untuk detail error
+        console.error("Login Error:", error);
         res.status(500).json({ message: "Terjadi kesalahan di server: " + error.message });
     }
 };
 
-// --- REGISTER FUNCTION ---
+// --- REGISTER FUNCTION (Gunakan ini untuk buat Takmir) ---
 exports.register = async (req, res) => {
     const { nama, email, password, role, foto_tanda_tangan } = req.body;
 
-    // Validasi input
     if (!nama || !email || !password || !role) {
         return res.status(400).json({ 
             message: "Data tidak lengkap! Nama, Email, Password, dan Role wajib diisi." 
@@ -86,10 +79,10 @@ exports.register = async (req, res) => {
             [nama, email, hashedPassword, role, finalTtd]
         );
 
-        res.status(201).send({ message: "User registered successfully!" });
+        res.status(201).send({ message: "User berhasil didaftarkan!" });
 
     } catch (error) {
         console.error("Register Error:", error);
-        res.status(500).send({ message: "Error registering user: " + error.message });
+        res.status(500).send({ message: "Gagal mendaftarkan user: " + error.message });
     }
 };
