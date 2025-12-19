@@ -1,54 +1,66 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-// --- IMPORT LAYOUT ---
-import SuperAdminLayout from './layouts/superAdminLayout'; 
+// Import Layouts
 import PublicLayout from './layouts/publicLayout';
-import CreateTakmir from './pages/superadmin/createTakmir';
+import SuperAdminLayout from './layouts/superAdminLayout';
 
-// --- IMPORT HALAMAN (PAGES) ---
-import LoginPage from './pages/auth/login'; 
-// RegisterPage kita hapus importnya karena tidak dipakai di publik lagi
-
-// Halaman Super Admin
-import DashboardAdmin from './pages/superadmin/dashboard';
+// Import Pages
+import Login from './pages/auth/login';
+import Register from './pages/auth/register';
+import SuperAdminDashboard from './pages/superadmin/dashboard';
 import CreateTakmir from './pages/superadmin/createTakmir'; 
+import TakmirDashboard from './pages/takmir/dashboard';
 
-// Halaman Takmir
-import DashboardTakmir from './pages/takmir/dashboard';
+import { useAuth } from './hooks/useAuth';
 
 function App() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div className="loading-screen">Loading...</div>;
+  }
+
   return (
     <Routes>
-      
-      {/* ======================= REDIRECT ROOT ======================= */}
-      {/* Jika buka halaman awal, langsung paksa ke /login */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-
-      {/* ======================= PUBLIC ROUTES ======================= */}
-      <Route path="/login" element={<LoginPage />} />
-      {/* Route Register dihapus */}
-      
-      {/* ======================= SUPER ADMIN ROUTES ======================= */}
-      <Route path="/superadmin" element={<SuperAdminLayout />}>
-          <Route path="dashboard" element={<DashboardAdmin />} />
-          <Route path="users" element={<CreateTakmir />} />
-          <Route path="masjid" element={<div>Halaman Data Masjid (Coming Soon)</div>} />
+      {/* Rute Publik */}
+      <Route path="/" element={<PublicLayout />}>
+        <Route index element={<Navigate to="/login" replace />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
       </Route>
 
-      {/* ======================= TAKMIR ROUTES ======================= */}
-      <Route path="/takmir/dashboard" element={<DashboardTakmir />} />
-      
-      {/* ======================= 404 / NOT FOUND ======================= */}
-      <Route path="*" element={
-        <PublicLayout>
-          <div className="container text-center mt-5">
-            <h1 className="display-1 text-danger">404</h1>
-            <h3>Halaman Tidak Ditemukan</h3>
-          </div>
-        </PublicLayout>
-      } />
+      {/* Rute Super Admin */}
+      <Route 
+        path="/superadmin" 
+        element={
+          user && user.role === 'superadmin' ? (
+            <SuperAdminLayout />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      >
+        <Route path="dashboard" element={<SuperAdminDashboard />} />
+        <Route path="create-takmir" element={<CreateTakmir />} />
+      </Route>
 
+      {/* Rute Takmir */}
+      <Route 
+        path="/takmir" 
+        element={
+          user && user.role === 'takmir' ? (
+            <TakmirDashboard />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      >
+        <Route path="dashboard" element={<TakmirDashboard />} />
+      </Route>
+
+      {/* Jika link ngawur, lempar ke login */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
