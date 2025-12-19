@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { login as loginApi } from '../../api/auth.api'; // Import fungsi API yang benar
 import '../../styles/auth.css'; 
 
 const LoginPage = () => {
@@ -9,7 +10,7 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const { login } = useAuth();
+    const { loginAction } = useAuth(); // Gunakan loginAction dari context
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -18,31 +19,26 @@ const LoginPage = () => {
         setLoading(true);
 
         try {
-            const response = await login(email, password);
+            // 1. Panggil API ke backend server
+            const response = await loginApi(email, password);
             
-            // --- DEBUGGING: Lihat isi respon di Console ---
-            console.log("FULL RESPONSE:", response);
+            // 2. Ambil data dari response axios
+            const userData = response.data; 
 
-            // --- DETEKSI DATA USER ---
-            // Kadang data ada di 'response', kadang di 'response.data' (tergantung axios)
-            const data = response.data || response; 
-            
-            // --- DETEKSI ROLE ---
-            // Cari role di berbagai kemungkinan lokasi
-            const userRole = data.role || data.user?.role || response.role;
+            // 3. Simpan data user & token ke global state/localStorage
+            loginAction(userData);
 
-            console.log("ROLE DETECTED:", userRole);
+            // 4. Navigasi berdasarkan role (pastikan teks sesuai database)
+            const userRole = userData.role;
 
             if (userRole === 'super admin') {
                 navigate('/superadmin/dashboard', { replace: true });
             } else if (userRole === 'takmir') {
                 navigate('/takmir/dashboard', { replace: true });
             } else {
-                // Jika login sukses tapi role tidak terbaca
-                setError('Login berhasil, tapi Role tidak dikenali. Cek Console (F12).');
+                setError('Role tidak dikenali: ' + userRole);
             }
         } catch (err) {
-            // Jika backend menolak (password salah / user tak ditemukan)
             console.error(err);
             setError(err.response?.data?.message || 'Email atau password salah');
         } finally {
@@ -71,7 +67,7 @@ const LoginPage = () => {
                                 className="form-control"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="admin@test.com"
+                                placeholder="email@example.com"
                                 disabled={loading}
                                 required
                             />
@@ -95,9 +91,7 @@ const LoginPage = () => {
                             className="btn btn-primary btn-login"
                             disabled={loading}
                         >
-                            {loading ? (
-                                <span><span className="spinner-border spinner-border-sm me-2"></span>Loading...</span>
-                            ) : 'Masuk'}
+                            {loading ? 'Loading...' : 'Masuk'}
                         </button>
                     </form>
                 </div>
