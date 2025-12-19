@@ -1,98 +1,43 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { login as loginAPI, register as registerAPI } from "../api/auth.api";
-import { useNavigate } from "react-router-dom";
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  // Cek login saat refresh
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
+    useEffect(() => {
+        // Cek user di localStorage saat pertama kali load
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+            setUser(JSON.parse(savedUser));
+        }
+        setLoading(false);
+    }, []);
 
-    if (savedUser && token) {
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
-  }, []);
+    const loginAction = (userData) => {
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('token', userData.accessToken);
+    };
 
-  // =================
-  // LOGIN
-  // =================
-  const login = async (email, password) => {
-    try {
-      const response = await loginAPI(email, password);
-      const data = response.data;
+    const logoutAction = () => {
+        setUser(null);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+    };
 
-      localStorage.setItem("token", data.accessToken);
-
-      const userData = {
-        user_id: data.user_id,
-        nama: data.nama,
-        email: data.email,
-        role: data.role,
-        masjidId: data.masjidId,
-      };
-
-      localStorage.setItem("user", JSON.stringify(userData));
-      setUser(userData);
-
-      // Redirect berdasarkan role
-      if (data.role === "super admin") {
-        navigate("/superadmin/dashboard");
-      } else if (data.role === "takmir") {
-        navigate("/takmir/dashboard");
-      } else {
-        navigate("/");
-      }
-
-      return { success: true };
-    } catch (error) {
-      console.error("Login Failed:", error);
-      return {
-        success: false,
-        message:
-          error.response?.data?.message ||
-          "Login gagal. Periksa koneksi atau kredensial Anda.",
-      };
-    }
-  };
-
-  // =================
-  // REGISTER
-  // =================
-  const register = async (formData) => {
-    try {
-      await registerAPI(formData);
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        message:
-          error.response?.data?.message || "Registrasi gagal.",
-      };
-    }
-  };
-
-  // =================
-  // LOGOUT
-  // =================
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-    navigate("/login");
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, login, logout, register, loading }}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider value={{ user, loginAction, logoutAction, loading }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth harus digunakan di dalam AuthProvider");
+    }
+    return context;
+};

@@ -23,12 +23,24 @@ const CreateTakmir = () => {
         setError('');
         
         try {
+            // Axios menyimpan data dari server di properti 'data'
             const response = await register(formData);
-            setMessage("Berjaya: " + response.message);
-            // Reset borang selepas berjaya
-            setFormData({ nama: '', email: '', password: '', role: 'takmir', foto_tanda_tangan: null });
+            
+            // Ambil pesan dari response.data.message
+            setMessage(response.data.message || "Berhasil menambahkan takmir");
+            
+            // Reset form setelah berhasil
+            setFormData({ 
+                nama: '', 
+                email: '', 
+                password: '', 
+                role: 'takmir', 
+                foto_tanda_tangan: null 
+            });
         } catch (err) {
-            setError(err.response?.data?.message || 'Gagal menambahkan takmir');
+            // Ambil pesan error dari backend jika ada
+            const errorMsg = err.response?.data?.message || 'Gagal menambahkan takmir';
+            setError(errorMsg);
         }
     };
 
