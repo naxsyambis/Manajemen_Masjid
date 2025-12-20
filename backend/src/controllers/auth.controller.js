@@ -30,15 +30,17 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: "Password salah." });
         }
 
-        const token = jwt.sign({ id: user.user_id, role: user.role }, jwtSecret, {
-            expiresIn: 86400 
-        });
+        const token = jwt.sign(
+            { id: user.user_id, role: user.role === 'super admin' ? 'superadmin' : user.role }, 
+            jwtSecret, {
+            expiresIn: 86400 }
+        );
 
         res.status(200).json({
             user_id: user.user_id,
             nama: user.nama,
             email: user.email,
-            role: user.role,
+            role: user.role === 'super admin' ? 'superadmin' : user.role,
             foto_tanda_tangan: user.foto_tanda_tangan,
             accessToken: token
         });

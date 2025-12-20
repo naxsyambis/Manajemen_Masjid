@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json()); // Untuk parsing JSON body
+app.use('/api/superadmin', superAdminRoutes);
 
 // Routes
 app.use('/api/auth', authRoutes);
