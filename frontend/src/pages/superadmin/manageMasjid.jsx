@@ -74,12 +74,21 @@ const ManageMasjid = () => {
                             
                             <div className="mb-4">
                                 <label className="form-label small fw-bold text-primary">Pilih Takmir Penanggung Jawab</label>
-                                <select className="form-select border-primary" required
-                                    value={formData.user_id} onChange={e => setFormData({...formData, user_id: e.target.value})}>
+                                <select 
+                                    className="form-select border-primary" 
+                                    required
+                                    value={formData.user_id} 
+                                    onChange={e => setFormData({...formData, user_id: e.target.value})}
+                                >
                                     <option value="">-- Pilih Takmir Tersedia --</option>
-                                    {availableTakmirs.map(t => (
-                                        <option key={t.user_id} value={t.user_id}>{t.nama}</option>
-                                    ))}
+                                    {/* Menggunakan availableTakmirs yang sudah berisi data */}
+                                    {availableTakmirs.length > 0 ? (
+                                        availableTakmirs.map(t => (
+                                            <option key={t.user_id} value={t.user_id}>{t.nama}</option>
+                                        ))
+                                    ) : (
+                                        <option disabled>Tidak ada takmir tersedia</option>
+                                    )}
                                 </select>
                                 <small className="text-muted mt-1 d-block">Hanya menampilkan takmir yang belum bertugas.</small>
                             </div>
