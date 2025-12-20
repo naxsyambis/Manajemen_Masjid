@@ -8,6 +8,9 @@ import Login from './pages/auth/login';
 import SuperAdminDashboard from './pages/superadmin/dashboard';
 import CreateTakmir from './pages/superadmin/createTakmir';
 import TakmirDashboard from './pages/takmir/dashboard';
+import ManageMasjid from './pages/superadmin/manageMasjid';
+import ManageTakmirAssignment from './pages/superadmin/manageTakmirAssignment';
+
 
 const ProtectedRoute = ({ children, allowedRole }) => {
     const { user, loading } = useAuth();
@@ -43,6 +46,7 @@ function App() {
                 >
                     <Route path="dashboard" element={<SuperAdminDashboard />} />
                     <Route path="create-takmir" element={<CreateTakmir />} />
+                    <Route path="manage-takmir-assignment" element={<ManageTakmirAssignment />} />
                 </Route>
 
                 <Route 
@@ -53,6 +57,9 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+
+                {/* <Route path="manage-masjid" 
+                element={<ManageMasjid />} /> */}
 
                 <Route path="/" element={<Navigate to="/login" replace />} />
             </Routes>

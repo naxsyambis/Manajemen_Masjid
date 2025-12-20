@@ -29,6 +29,9 @@ const SuperAdminLayout = () => {
                     <Link to="/superadmin/create-takmir" className={`nav-link p-3 rounded-3 transition-all ${isActive('/create-takmir')}`}>
                         <i className="bi bi-person-plus me-2"></i> Manajemen Takmir
                     </Link>
+                    <Link to="/superadmin/manage-masjid" className={`nav-link p-3 rounded-3 transition-all ${isActive('/manage-masjid')}`}>
+                        🏢 Unit Masjid
+                    </Link>
                 </nav>
 
                 <div style={{ position: 'absolute', bottom: '30px', width: 'calc(280px - 48px)' }}>

@@ -1,11 +1,105 @@
 const db = require('../config/database');
 
+// 1. Ambil daftar takmir yang BELUM memiliki tugas di masjid manapun
+exports.getAvailableTakmirs = async (req, res) => {
+    try {
+        const [rows] = await db.execute(`
+            SELECT u.user_id, u.nama, u.email 
+            FROM user_app u 
+            LEFT JOIN masjid_takmir mt ON u.user_id = mt.user_id 
+            WHERE u.role = 'takmir' AND mt.id IS NULL
+        `);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 2. Assign Takmir Lama ke Masjid
+exports.assignTakmir = async (req, res) => {
+    const { user_id, masjid_id } = req.body;
+    try {
+        await db.execute(
+            'INSERT INTO masjid_takmir (user_id, masjid_id, pembuatakun) VALUES (?, ?, ?)',
+            [user_id, masjid_id, req.user.id] // req.user.id dari middleware auth
+        );
+        res.json({ message: "Takmir berhasil ditugaskan!" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 3. Tambah Takmir Baru & Langsung Assign (Transaction)
+exports.addNewTakmirToMasjid = async (req, res) => {
+    const { nama, email, password, masjid_id } = req.body;
+    const connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        // Simpan user baru
+        const [resUser] = await connection.execute(
+            'INSERT INTO user_app (nama, email, password, role) VALUES (?, ?, ?, ?)',
+            [nama, email, hashedPassword, 'takmir']
+        );
+        
+        // Langsung assign ke masjid
+        await connection.execute(
+            'INSERT INTO masjid_takmir (user_id, masjid_id, pembuatakun) VALUES (?, ?, ?)',
+            [resUser.insertId, masjid_id, req.user.id]
+        );
+
+        await connection.commit();
+        res.status(201).json({ message: "Takmir baru berhasil dibuat dan ditugaskan!" });
+    } catch (error) {
+        await connection.rollback();
+        res.status(500).json({ message: error.message });
+    } finally {
+        connection.release();
+    }
+};
+
+
 exports.getAllMasjids = async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT masjid_id, nama_masjid FROM masjid');
         res.json(rows);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+// 1. Mengambil semua daftar masjid (READ)
+exports.getMasjidList = async (req, res) => {
+    try {
+        const [rows] = await db.execute('SELECT * FROM masjid ORDER BY nama_masjid ASC');
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: "Gagal mengambil data masjid: " + error.message });
+    }
+};
+
+exports.storeMasjid = async (req, res) => {
+    const { nama_masjid, alamat, no_hp, deskripsi } = req.body;
+    try {
+        await db.execute(
+            'INSERT INTO masjid (nama_masjid, alamat, no_hp, deskripsi) VALUES (?, ?, ?, ?)',
+            [nama_masjid, alamat, no_hp, deskripsi]
+        );
+        res.status(201).json({ message: "Masjid berhasil didaftarkan!" });
+    } catch (error) {
+        res.status(500).json({ message: "Gagal menambah masjid: " + error.message });
+    }
+};
+
+exports.deleteMasjid = async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Cek apakah ada data keuangan atau takmir yang terhubung sebelum menghapus
+        await db.execute('DELETE FROM masjid WHERE masjid_id = ?', [id]);
+        res.json({ message: "Data masjid berhasil dihapus." });
+    } catch (error) {
+        res.status(500).json({ message: "Gagal menghapus: Data mungkin masih terhubung dengan takmir/keuangan." });
     }
 };
 
