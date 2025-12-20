@@ -30,8 +30,10 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: "Password salah." });
         }
 
+        const userRole = user.role === 'super admin' ? 'superadmin' : user.role;
+
         const token = jwt.sign(
-            { id: user.user_id, role: user.role === 'super admin' ? 'superadmin' : user.role }, 
+            { id: user.user_id, role: userRole },
             jwtSecret, {
             expiresIn: 86400 }
         );

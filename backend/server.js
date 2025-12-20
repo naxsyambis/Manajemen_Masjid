@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const authRoutes = require('./src/routes/auth.routes'); 
 const cors = require('cors');
+const superAdminRoutes = require('./src/routes/superadmin.routes');
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use('/api/superadmin', superAdminRoutes);
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/superadmin', superAdminRoutes);
 
 // Server start
 app.listen(PORT, () => {
