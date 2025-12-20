@@ -3,48 +3,52 @@ import axios from 'axios';
 
 const ManageMasjid = () => {
     const [masjidList, setMasjidList] = useState([]);
-    const [unassignedTakmirs, setUnassignedTakmirs] = useState([]);
-    const [formData, setFormData] = useState({ nama_masjid: '', alamat: '', no_hp: '', deskripsi: '' });
+    const [availableTakmirs, setAvailableTakmirs] = useState([]); // State untuk dropdown
+    const [formData, setFormData] = useState({ 
+        nama_masjid: '', alamat: '', no_hp: '', deskripsi: '', user_id: '' 
+    });
     const [loading, setLoading] = useState(false);
-    const [availableTakmirs, setAvailableTakmirs] = useState([]);
 
+    // Fungsi untuk mengambil data masjid dan takmir sekaligus
     const fetchData = async () => {
-            try {
-                const resM = await axios.get('http://localhost:3000/api/superadmin/masjid');
-                const resT = await axios.get('http://localhost:3000/api/superadmin/unassigned-takmirs');
-                setMasjidList(resM.data);
-                setUnassignedTakmirs(resT.data);
-                setAvailableTakmirs(resT.data);
-            } catch (err) { console.error(err); }
-        };
-    
-    const fetchMasjids = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/superadmin/masjid');
-            setMasjidList(res.data);
-        } catch (err) { console.error(err); }
+            const resM = await axios.get('http://localhost:3000/api/superadmin/masjid');
+            const resT = await axios.get('http://localhost:3000/api/superadmin/unassigned-takmirs');
+            
+            setMasjidList(resM.data);
+            setAvailableTakmirs(resT.data); // Data takmir masuk ke sini
+        } catch (err) { 
+            console.error("Gagal mengambil data dari server:", err); 
+        }
     };
 
-    useEffect(() => { fetchMasjids(); }, []);
+    // Panggil fetchData saat halaman pertama kali dibuka
+    useEffect(() => { 
+        fetchData(); 
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
+            // Gunakan endpoint masjid-with-takmir agar relasi tersimpan
             await axios.post('http://localhost:3000/api/superadmin/masjid-with-takmir', formData);
-            alert("Masjid Berhasil Ditambahkan");
-            setFormData({ nama_masjid: '', alamat: '', no_hp: '', deskripsi: '' });
-            fetchMasjids();
-        } catch (err) { alert("Gagal menambah masjid"); }
-        finally { setLoading(false); }
+            alert("Masjid Berhasil Ditambahkan!");
+            setFormData({ nama_masjid: '', alamat: '', no_hp: '', deskripsi: '', user_id: '' });
+            fetchData(); // Refresh data agar takmir yang sudah dipilih hilang dari daftar
+        } catch (err) { 
+            alert("Gagal menambah masjid"); 
+        } finally { 
+            setLoading(false); 
+        }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Hapus masjid ini? Seluruh data terkait mungkin akan hilang.")) {
+        if (window.confirm("Hapus masjid ini?")) {
             try {
                 await axios.delete(`http://localhost:3000/api/superadmin/masjid/${id}`);
-                fetchMasjids();
-            } catch (err) { alert(err.response.data.message); }
+                fetchData();
+            } catch (err) { alert(err.response?.data?.message); }
         }
     };
 
@@ -74,14 +78,9 @@ const ManageMasjid = () => {
                             
                             <div className="mb-4">
                                 <label className="form-label small fw-bold text-primary">Pilih Takmir Penanggung Jawab</label>
-                                <select 
-                                    className="form-select border-primary" 
-                                    required
-                                    value={formData.user_id} 
-                                    onChange={e => setFormData({...formData, user_id: e.target.value})}
-                                >
+                                <select className="form-select border-primary" required
+                                    value={formData.user_id} onChange={e => setFormData({...formData, user_id: e.target.value})}>
                                     <option value="">-- Pilih Takmir Tersedia --</option>
-                                    {/* Menggunakan availableTakmirs yang sudah berisi data */}
                                     {availableTakmirs.length > 0 ? (
                                         availableTakmirs.map(t => (
                                             <option key={t.user_id} value={t.user_id}>{t.nama}</option>
@@ -90,15 +89,15 @@ const ManageMasjid = () => {
                                         <option disabled>Tidak ada takmir tersedia</option>
                                     )}
                                 </select>
-                                <small className="text-muted mt-1 d-block">Hanya menampilkan takmir yang belum bertugas.</small>
                             </div>
 
                             <button className="btn btn-primary w-100 py-2 fw-bold" disabled={loading}>
-                                {loading ? 'Menyimpan...' : 'Simpan Unit Masjid'}
+                                {loading ? 'Memproses...' : 'Simpan Unit Masjid'}
                             </button>
                         </form>
                     </div>
                 </div>
+                {/* Bagian tabel tetap sama */}
                 <div className="col-lg-8">
                     <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
                         <table className="table align-middle mb-0">
@@ -113,10 +112,7 @@ const ManageMasjid = () => {
                                 {masjidList.map((m) => (
                                     <tr key={m.masjid_id}>
                                         <td className="px-4 fw-bold">{m.nama_masjid}</td>
-                                        <td>
-                                            <small className="d-block text-muted">{m.alamat}</small>
-                                            <small className="fw-bold text-primary">{m.no_hp}</small>
-                                        </td>
+                                        <td>{m.alamat}</td>
                                         <td className="text-end px-4">
                                             <button onClick={() => handleDelete(m.masjid_id)} className="btn btn-sm btn-outline-danger border-0">
                                                 Hapus

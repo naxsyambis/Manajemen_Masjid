@@ -2,12 +2,15 @@ const db = require('../config/database');
 
 exports.getUnassignedTakmirs = async (req, res) => {
     try {
+        // Query ini mencari takmir yang tidak ada pasangannya di tabel masjid_takmir
         const [rows] = await db.execute(`
-            SELECT user_id, nama 
-            FROM user_app 
-            WHERE role = 'takmir' 
-            AND user_id NOT IN (SELECT user_id FROM masjid_takmir)
+            SELECT u.user_id, u.nama 
+            FROM user_app u
+            LEFT JOIN masjid_takmir mt ON u.user_id = mt.user_id
+            WHERE u.role = 'takmir' 
+            AND mt.user_id IS NULL
         `);
+        console.log("Data takmir tersedia:", rows); // Cek di terminal backend Anda
         res.json(rows);
     } catch (error) {
         res.status(500).json({ message: error.message });
