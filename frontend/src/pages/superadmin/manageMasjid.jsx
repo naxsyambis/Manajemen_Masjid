@@ -14,6 +14,7 @@ const ManageMasjid = () => {
                 const resT = await axios.get('http://localhost:3000/api/superadmin/unassigned-takmirs');
                 setMasjidList(resM.data);
                 setUnassignedTakmirs(resT.data);
+                setAvailableTakmirs(resT.data);
             } catch (err) { console.error(err); }
         };
     
@@ -30,7 +31,7 @@ const ManageMasjid = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.post('http://localhost:3000/api/superadmin/masjid', formData);
+            await axios.post('http://localhost:3000/api/superadmin/masjid-with-takmir', formData);
             alert("Masjid Berhasil Ditambahkan");
             setFormData({ nama_masjid: '', alamat: '', no_hp: '', deskripsi: '' });
             fetchMasjids();
