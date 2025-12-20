@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+const cardStyle = {
+    borderRadius: '16px',
+    boxShadow: '0 10px 28px rgba(0,0,0,0.06)',
+    border: 'none'
+};
+
+const statCard = (color) => ({
+    ...cardStyle,
+    borderLeft: `6px solid ${color}`,
+    height: '100%'
+});
+
 const DashboardAdmin = () => {
     const [stats, setStats] = useState({ summary: {}, keuangan: [], aktivitas: [] });
     const [loading, setLoading] = useState(true);
@@ -19,43 +31,62 @@ const DashboardAdmin = () => {
         fetchData();
     }, []);
 
-    if (loading) return <div className="text-center mt-5">Memuat Data...</div>;
+    if (loading) return (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+            <div className="spinner-border text-primary" />
+        </div>
+    );
 
     return (
-        <div className="container-fluid">
-            <h3 className="mb-4">Dashboard Ranting Muhammadiyah</h3>
-            
+        <div className="container-fluid py-4" style={{ background: '#f4f6f9', minHeight: '100vh' }}>
+
+            {/* HEADER */}
+            <div className="d-flex justify-content-between align-items-center mb-4 p-3 bg-white"
+                style={cardStyle}>
+                <div>
+                    <h4 className="fw-bold mb-1">Dashboard Ranting Panjangrejo</h4>
+                    <small className="text-muted">Sistem Manajemen Masjid</small>
+                </div>
+                <span className="badge bg-light text-dark border px-3 py-2 rounded-pill">
+                    {new Date().toLocaleDateString('id-ID', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })}
+                </span>
+            </div>
+
+            {/* STAT CARDS */}
             <div className="row g-4 mb-5">
                 <div className="col-md-6 col-lg-3">
-                    <div className="card bg-primary text-white shadow-sm border-0">
-                        <div className="card-body">
-                            <h6 className="opacity-75">Total Masjid</h6>
-                            <h2 className="fw-bold">{stats.summary.total_masjid}</h2>
-                        </div>
+                    <div className="p-4 bg-white" style={statCard('#0d6efd')}>
+                        <div className="text-uppercase small fw-bold text-muted">Total Masjid</div>
+                        <div className="fs-2 fw-bold mt-2">{stats.summary.total_masjid}</div>
                     </div>
                 </div>
+
                 <div className="col-md-6 col-lg-3">
-                    <div className="card bg-success text-white shadow-sm border-0">
-                        <div className="card-body">
-                            <h6 className="opacity-75">Total Takmir</h6>
-                            <h2 className="fw-bold">{stats.summary.total_takmir}</h2>
-                        </div>
+                    <div className="p-4 bg-white" style={statCard('#198754')}>
+                        <div className="text-uppercase small fw-bold text-muted">Total Takmir</div>
+                        <div className="fs-2 fw-bold mt-2">{stats.summary.total_takmir}</div>
                     </div>
                 </div>
             </div>
 
-            <div className="row">
-                {/* Tabel Ringkasan Keuangan per Masjid */}
+            <div className="row g-4">
+                {/* TABLE KEUANGAN */}
                 <div className="col-lg-8">
-                    <div className="card shadow-sm mb-4">
-                        <div className="card-header bg-white">
-                            <h5 className="mb-0">Kondisi Keuangan Masjid</h5>
+                    <div className="bg-white" style={cardStyle}>
+                        <div className="p-3 border-bottom">
+                            <h5 className="fw-bold mb-0">Kondisi Keuangan Masjid</h5>
                         </div>
-                        <div className="card-body p-0">
-                            <table className="table table-hover mb-0">
+
+                        <div className="table-responsive">
+                            <table className="table align-middle mb-0">
                                 <thead className="table-light">
                                     <tr>
-                                        <th>Nama Masjid</th>
+                                        <th className="px-4">Nama Masjid</th>
                                         <th>Pemasukan</th>
                                         <th>Pengeluaran</th>
                                         <th>Saldo</th>
@@ -64,10 +95,16 @@ const DashboardAdmin = () => {
                                 <tbody>
                                     {stats.keuangan.map((m, i) => (
                                         <tr key={i}>
-                                            <td>{m.nama_masjid}</td>
-                                            <td className="text-success">Rp {Number(m.total_masuk).toLocaleString()}</td>
-                                            <td className="text-danger">Rp {Number(m.total_keluar).toLocaleString()}</td>
-                                            <td className="fw-bold">Rp {(m.total_masuk - m.total_keluar).toLocaleString()}</td>
+                                            <td className="px-4 fw-medium">{m.nama_masjid}</td>
+                                            <td className="text-success">
+                                                Rp {Number(m.total_masuk).toLocaleString('id-ID')}
+                                            </td>
+                                            <td className="text-danger">
+                                                Rp {Number(m.total_keluar).toLocaleString('id-ID')}
+                                            </td>
+                                            <td className="fw-bold">
+                                                Rp {(m.total_masuk - m.total_keluar).toLocaleString('id-ID')}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -76,24 +113,41 @@ const DashboardAdmin = () => {
                     </div>
                 </div>
 
-                {/* Aktivitas Terbaru */}
+                {/* AKTIVITAS */}
                 <div className="col-lg-4">
-                    <div className="card shadow-sm">
-                        <div className="card-header bg-white">
-                            <h5 className="mb-0">Log Aktivitas</h5>
+                    <div className="bg-white h-100" style={cardStyle}>
+                        <div className="p-3 border-bottom">
+                            <h5 className="fw-bold mb-0">Aktivitas Terbaru</h5>
                         </div>
-                        <ul className="list-group list-group-flush">
+
+                        <div className="list-group list-group-flush">
                             {stats.aktivitas.length > 0 ? stats.aktivitas.map((a, i) => (
-                                <li key={i} className="list-group-item">
-                                    <small className="text-muted">{new Date(a.created_at).toLocaleString()}</small>
-                                    <p className="mb-0"><strong>{a.nama}</strong> melakukan <em>{a.action}</em> pada {a.nama_tabel}</p>
-                                    <small className="badge bg-light text-dark">{a.nama_masjid || 'Sistem'}</small>
-                                </li>
-                            )) : <li className="list-group-item">Belum ada aktivitas.</li>}
-                        </ul>
+                                <div key={i} className="list-group-item p-3 border-0 border-bottom">
+                                    <div className="d-flex justify-content-between">
+                                        <small className="text-muted">
+                                            {new Date(a.created_at).toLocaleTimeString()}
+                                        </small>
+                                        <span className="badge bg-primary-subtle text-primary rounded-pill small">
+                                            {a.action}
+                                        </span>
+                                    </div>
+                                    <p className="mb-1 mt-2 small">
+                                        <strong>{a.nama}</strong> mengedit <strong>{a.nama_tabel}</strong>
+                                    </p>
+                                    <small className="text-secondary">
+                                        {a.nama_masjid || 'Sistem'}
+                                    </small>
+                                </div>
+                            )) : (
+                                <div className="p-4 text-center text-muted">
+                                    Belum ada aktivitas.
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };
