@@ -134,7 +134,7 @@ const CreateTakmir = () => {
                                 />
                             </div>
 
-                            <div className="mb-4">
+                            {/* <div className="mb-4">
                                 <label className="form-label small fw-bold">Masjid</label>
                                 <select
                                     name="masjid_id"
@@ -150,7 +150,7 @@ const CreateTakmir = () => {
                                         </option>
                                     ))}
                                 </select>
-                            </div>
+                            </div> */}
 
                             <button
                                 type="submit"

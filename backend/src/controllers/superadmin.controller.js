@@ -1,5 +1,20 @@
 const db = require('../config/database');
 
+exports.getUnassignedTakmirs = async (req, res) => {
+    try {
+        const [rows] = await db.execute(`
+            SELECT user_id, nama 
+            FROM user_app 
+            WHERE role = 'takmir' 
+            AND user_id NOT IN (SELECT user_id FROM masjid_takmir)
+        `);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
 // 1. Ambil daftar takmir yang BELUM memiliki tugas di masjid manapun
 exports.getAvailableTakmirs = async (req, res) => {
     try {
@@ -79,16 +94,35 @@ exports.getMasjidList = async (req, res) => {
     }
 };
 
-exports.storeMasjid = async (req, res) => {
-    const { nama_masjid, alamat, no_hp, deskripsi } = req.body;
+exports.storeMasjidWithTakmir = async (req, res) => {
+    const { nama_masjid, alamat, no_hp, deskripsi, user_id } = req.body;
+    const connection = await db.getConnection();
+    
     try {
-        await db.execute(
+        await connection.beginTransaction();
+
+        // 1. Simpan Masjid
+        const [resMasjid] = await connection.execute(
             'INSERT INTO masjid (nama_masjid, alamat, no_hp, deskripsi) VALUES (?, ?, ?, ?)',
             [nama_masjid, alamat, no_hp, deskripsi]
         );
-        res.status(201).json({ message: "Masjid berhasil didaftarkan!" });
+        const masjidId = resMasjid.insertId;
+
+        // 2. Hubungkan ke Takmir yang dipilih
+        if (user_id) {
+                    await connection.execute(
+                        'INSERT INTO masjid_takmir (user_id, masjid_id, pembuatakun) VALUES (?, ?, ?)',
+                        [user_id, masjidId, req.user.id] // req.user.id adalah ID Superadmin yang login
+                    );
+                }
+
+        await connection.commit();
+        res.status(201).json({ message: "Masjid berhasil dibuat dan takmir ditugaskan!" });
     } catch (error) {
-        res.status(500).json({ message: "Gagal menambah masjid: " + error.message });
+        await connection.rollback();
+        res.status(500).json({ message: error.message });
+    } finally {
+        connection.release();
     }
 };
 

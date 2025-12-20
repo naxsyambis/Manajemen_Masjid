@@ -46,6 +46,7 @@ function App() {
                 >
                     <Route path="dashboard" element={<SuperAdminDashboard />} />
                     <Route path="create-takmir" element={<CreateTakmir />} />
+                    <Route path="manage-masjid" element={<ManageMasjid />} />
                     <Route path="manage-takmir-assignment" element={<ManageTakmirAssignment />} />
                 </Route>
 

@@ -3,9 +3,20 @@ import axios from 'axios';
 
 const ManageMasjid = () => {
     const [masjidList, setMasjidList] = useState([]);
+    const [unassignedTakmirs, setUnassignedTakmirs] = useState([]);
     const [formData, setFormData] = useState({ nama_masjid: '', alamat: '', no_hp: '', deskripsi: '' });
     const [loading, setLoading] = useState(false);
+    const [availableTakmirs, setAvailableTakmirs] = useState([]);
 
+    const fetchData = async () => {
+            try {
+                const resM = await axios.get('http://localhost:3000/api/superadmin/masjid');
+                const resT = await axios.get('http://localhost:3000/api/superadmin/unassigned-takmirs');
+                setMasjidList(resM.data);
+                setUnassignedTakmirs(resT.data);
+            } catch (err) { console.error(err); }
+        };
+    
     const fetchMasjids = async () => {
         try {
             const res = await axios.get('http://localhost:3000/api/superadmin/masjid');
@@ -59,6 +70,19 @@ const ManageMasjid = () => {
                                 <input type="text" className="form-control" value={formData.no_hp} required
                                     onChange={e => setFormData({...formData, no_hp: e.target.value})} />
                             </div>
+                            
+                            <div className="mb-4">
+                                <label className="form-label small fw-bold text-primary">Pilih Takmir Penanggung Jawab</label>
+                                <select className="form-select border-primary" required
+                                    value={formData.user_id} onChange={e => setFormData({...formData, user_id: e.target.value})}>
+                                    <option value="">-- Pilih Takmir Tersedia --</option>
+                                    {availableTakmirs.map(t => (
+                                        <option key={t.user_id} value={t.user_id}>{t.nama}</option>
+                                    ))}
+                                </select>
+                                <small className="text-muted mt-1 d-block">Hanya menampilkan takmir yang belum bertugas.</small>
+                            </div>
+
                             <button className="btn btn-primary w-100 py-2 fw-bold" disabled={loading}>
                                 {loading ? 'Menyimpan...' : 'Simpan Unit Masjid'}
                             </button>
