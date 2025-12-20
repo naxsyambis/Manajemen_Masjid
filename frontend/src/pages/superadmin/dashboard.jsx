@@ -1,18 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const cardStyle = {
-    borderRadius: '16px',
-    boxShadow: '0 10px 28px rgba(0,0,0,0.06)',
-    border: 'none'
-};
-
-const statCard = (color) => ({
-    ...cardStyle,
-    borderLeft: `6px solid ${color}`,
-    height: '100%'
-});
-
 const DashboardAdmin = () => {
     const [stats, setStats] = useState({ summary: {}, keuangan: [], aktivitas: [] });
     const [loading, setLoading] = useState(true);
@@ -32,78 +20,65 @@ const DashboardAdmin = () => {
     }, []);
 
     if (loading) return (
-        <div className="d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
-            <div className="spinner-border text-primary" />
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '70vh' }}>
+            <div className="spinner-grow text-primary" role="status"></div>
         </div>
     );
 
     return (
-        <div className="container-fluid py-4" style={{ background: '#f4f6f9', minHeight: '100vh' }}>
-
-            {/* HEADER */}
-            <div className="d-flex justify-content-between align-items-center mb-4 p-3 bg-white"
-                style={cardStyle}>
-                <div>
-                    <h4 className="fw-bold mb-1">Dashboard Ranting Panjangrejo</h4>
-                    <small className="text-muted">Sistem Manajemen Masjid</small>
-                </div>
-                <span className="badge bg-light text-dark border px-3 py-2 rounded-pill">
-                    {new Date().toLocaleDateString('id-ID', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    })}
-                </span>
+        <div className="container-fluid animate__animated animate__fadeIn">
+            <div className="mb-4">
+                <h3 className="fw-bold text-dark mb-1">Ringkasan Ranting</h3>
+                <p className="text-muted small">Pantau performa dan aktivitas masjid secara real-time.</p>
             </div>
-
-            {/* STAT CARDS */}
+            
+            {/* Kartu Statistik */}
             <div className="row g-4 mb-5">
                 <div className="col-md-6 col-lg-3">
-                    <div className="p-4 bg-white" style={statCard('#0d6efd')}>
-                        <div className="text-uppercase small fw-bold text-muted">Total Masjid</div>
-                        <div className="fs-2 fw-bold mt-2">{stats.summary.total_masjid}</div>
+                    <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div className="card-body p-4" style={{ borderLeft: '6px solid #0d6efd' }}>
+                            <p className="text-muted small fw-bold text-uppercase mb-1">Total Masjid</p>
+                            <h2 className="fw-bold mb-0">{stats.summary.total_masjid}</h2>
+                        </div>
                     </div>
                 </div>
-
                 <div className="col-md-6 col-lg-3">
-                    <div className="p-4 bg-white" style={statCard('#198754')}>
-                        <div className="text-uppercase small fw-bold text-muted">Total Takmir</div>
-                        <div className="fs-2 fw-bold mt-2">{stats.summary.total_takmir}</div>
+                    <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div className="card-body p-4" style={{ borderLeft: '6px solid #198754' }}>
+                            <p className="text-muted small fw-bold text-uppercase mb-1">Total Takmir</p>
+                            <h2 className="fw-bold mb-0">{stats.summary.total_takmir}</h2>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="row g-4">
-                {/* TABLE KEUANGAN */}
-                <div className="col-lg-8">
-                    <div className="bg-white" style={cardStyle}>
-                        <div className="p-3 border-bottom">
-                            <h5 className="fw-bold mb-0">Kondisi Keuangan Masjid</h5>
+                {/* Tabel Keuangan */}
+                <div className="col-xl-8">
+                    <div className="card border-0 shadow-sm rounded-4">
+                        <div className="card-header bg-white py-3 border-0 rounded-top-4">
+                            <h5 className="mb-0 fw-bold">Kondisi Keuangan Masjid</h5>
                         </div>
-
                         <div className="table-responsive">
                             <table className="table align-middle mb-0">
                                 <thead className="table-light">
                                     <tr>
-                                        <th className="px-4">Nama Masjid</th>
-                                        <th>Pemasukan</th>
-                                        <th>Pengeluaran</th>
-                                        <th>Saldo</th>
+                                        <th className="px-4 py-3 text-muted small">NAMA MASJID</th>
+                                        <th className="py-3 text-muted small">PEMASUKAN</th>
+                                        <th className="py-3 text-muted small">PENGELUARAN</th>
+                                        <th className="py-3 text-muted small text-end px-4">SALDO</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {stats.keuangan.map((m, i) => (
-                                        <tr key={i}>
-                                            <td className="px-4 fw-medium">{m.nama_masjid}</td>
-                                            <td className="text-success">
-                                                Rp {Number(m.total_masuk).toLocaleString('id-ID')}
-                                            </td>
-                                            <td className="text-danger">
-                                                Rp {Number(m.total_keluar).toLocaleString('id-ID')}
-                                            </td>
-                                            <td className="fw-bold">
-                                                Rp {(m.total_masuk - m.total_keluar).toLocaleString('id-ID')}
+                                        <tr key={i} className="hover-bg-light">
+                                            <td className="px-4 fw-medium text-dark">{m.nama_masjid}</td>
+                                            <td className="text-success small fw-bold">Rp {Number(m.total_masuk).toLocaleString('id-ID')}</td>
+                                            <td className="text-danger small fw-bold">Rp {Number(m.total_keluar).toLocaleString('id-ID')}</td>
+                                            <td className="text-end px-4">
+                                                <span className="badge bg-primary px-3 py-2 rounded-pill shadow-sm">
+                                                    Rp {(m.total_masuk - m.total_keluar).toLocaleString('id-ID')}
+                                                </span>
                                             </td>
                                         </tr>
                                     ))}
@@ -113,41 +88,29 @@ const DashboardAdmin = () => {
                     </div>
                 </div>
 
-                {/* AKTIVITAS */}
-                <div className="col-lg-4">
-                    <div className="bg-white h-100" style={cardStyle}>
-                        <div className="p-3 border-bottom">
-                            <h5 className="fw-bold mb-0">Aktivitas Terbaru</h5>
+                {/* Log Aktivitas */}
+                <div className="col-xl-4">
+                    <div className="card border-0 shadow-sm rounded-4 h-100">
+                        <div className="card-header bg-white py-3 border-0 rounded-top-4">
+                            <h5 className="mb-0 fw-bold">Aktivitas Terbaru</h5>
                         </div>
-
-                        <div className="list-group list-group-flush">
-                            {stats.aktivitas.length > 0 ? stats.aktivitas.map((a, i) => (
-                                <div key={i} className="list-group-item p-3 border-0 border-bottom">
-                                    <div className="d-flex justify-content-between">
-                                        <small className="text-muted">
-                                            {new Date(a.created_at).toLocaleTimeString()}
-                                        </small>
-                                        <span className="badge bg-primary-subtle text-primary rounded-pill small">
-                                            {a.action}
-                                        </span>
+                        <div className="card-body p-0">
+                            <div className="list-group list-group-flush">
+                                {stats.aktivitas.length > 0 ? stats.aktivitas.map((a, i) => (
+                                    <div key={i} className="list-group-item p-3 border-0 border-bottom">
+                                        <div className="d-flex w-100 justify-content-between mb-1">
+                                            <h6 className="mb-0 fw-bold text-dark">{a.nama}</h6>
+                                            <small className="text-muted">{new Date(a.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                                        </div>
+                                        <p className="mb-1 small text-muted">Aksi: <span className="text-primary fw-medium">{a.action}</span> di tabel {a.nama_tabel}</p>
+                                        <span className="badge bg-light text-dark border small rounded-pill">{a.nama_masjid || 'Sistem'}</span>
                                     </div>
-                                    <p className="mb-1 mt-2 small">
-                                        <strong>{a.nama}</strong> mengedit <strong>{a.nama_tabel}</strong>
-                                    </p>
-                                    <small className="text-secondary">
-                                        {a.nama_masjid || 'Sistem'}
-                                    </small>
-                                </div>
-                            )) : (
-                                <div className="p-4 text-center text-muted">
-                                    Belum ada aktivitas.
-                                </div>
-                            )}
+                                )) : <div className="p-4 text-center text-muted small">Belum ada aktivitas terekam.</div>}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };

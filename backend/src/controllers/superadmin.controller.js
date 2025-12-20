@@ -1,5 +1,40 @@
 const db = require('../config/database');
 
+exports.getAllMasjids = async (req, res) => {
+    try {
+        const [rows] = await db.execute('SELECT masjid_id, nama_masjid FROM masjid');
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.getAllTakmirs = async (req, res) => {
+    try {
+        const [rows] = await db.execute(`
+            SELECT u.user_id, u.nama, u.email, m.nama_masjid 
+            FROM user_app u
+            LEFT JOIN masjid_takmir mt ON u.user_id = mt.user_id
+            LEFT JOIN masjid m ON mt.masjid_id = m.masjid_id
+            WHERE u.role = 'takmir'
+        `);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.deleteTakmir = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.execute('DELETE FROM masjid_takmir WHERE user_id = ?', [id]);
+        await db.execute('DELETE FROM user_app WHERE user_id = ?', [id]);
+        res.json({ message: "Takmir berhasil dihapus" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 exports.getDashboardStats = async (req, res) => {
     try {
         // 1. Hitung Total Masjid & Takmir
