@@ -31,7 +31,7 @@ const LoginPage = () => {
             // 4. Navigasi berdasarkan role (pastikan teks sesuai database)
             const userRole = userData.role;
 
-            if (userRole === 'super admin') {
+            if (userRole === 'superadmin') {
                 navigate('/superadmin/dashboard', { replace: true });
             } else if (userRole === 'takmir') {
                 navigate('/takmir/dashboard', { replace: true });
