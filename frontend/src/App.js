@@ -10,7 +10,7 @@ import CreateTakmir from './pages/superadmin/createTakmir';
 import TakmirDashboard from './pages/takmir/dashboard';
 import ManageMasjid from './pages/superadmin/manageMasjid';
 import ManageTakmirAssignment from './pages/superadmin/manageTakmirAssignment';
-
+import LandingPage from './pages/public/landingPage';
 
 const ProtectedRoute = ({ children, allowedRole }) => {
     const { user, loading } = useAuth();
@@ -32,6 +32,8 @@ function App() {
     return (
         <Router>
             <Routes>
+                <Route path="/" element={<LandingPage />} />
+
                 <Route element={<PublicLayout />}>
                     <Route path="/login" element={<Login />} />
                 </Route>
@@ -62,7 +64,7 @@ function App() {
                 {/* <Route path="manage-masjid" 
                 element={<ManageMasjid />} /> */}
 
-                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
     );
