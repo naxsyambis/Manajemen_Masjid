@@ -17,8 +17,13 @@ const LandingPage = () => {
         axios.get('http://localhost:3000/api/public/news').then(res => setNews(res.data));
 
         // 3. Ambil Jadwal Sholat (API Eksternal Al-Adhan untuk Bantul)
-        axios.get('https://api.aladhan.com/v1/timingsByCity?city=Bantul&country=Indonesia&method=2')
-            .then(res => setPrayerTimes(res.data.data.timings));
+        // axios.get('https://api.aladhan.com/v1/timingsByCity?city=Bantul&country=Indonesia&method=2')
+        //     .then(res => setPrayerTimes(res.data.data.timings));
+
+
+
+        axios.get('http://localhost:3000/api/public/news').then(res => setNews(res.data));
+
     }, []);
 
     const filteredMasjids = masjids.filter(m => 
@@ -41,22 +46,31 @@ const LandingPage = () => {
                     <a href="#masjid">Masjid</a>
                     <a href="#berita">Berita</a>
                     <a href="#profil">Profil Organisasi</a>
+                    <a href="#jadwalsholat">Jadwal Sholat</a>
+                    <a href="#login">Login</a>
                 </nav>
             </header>
 
             {/* --- JADWAL SHOLAT --- */}
-            <section className="prayer-times">
-                <h3>Jadwal Sholat - Panjangrejo, Bantul</h3>
-                {prayerTimes ? (
-                    <div className="times-grid">
-                        <div>Subuh: {prayerTimes.Fajr}</div>
-                        <div>Dzuhur: {prayerTimes.Dhuhr}</div>
-                        <div>Ashar: {prayerTimes.Asr}</div>
-                        <div>Maghrib: {prayerTimes.Maghrib}</div>
-                        <div>Isya: {prayerTimes.Isha}</div>
+                <section className="prayer-times" style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '10px', padding: '15px' }}>
+                    <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>Jadwal Sholat - Panjangrejo, Bantul</h4>
+                    
+                    {/* Widget Iframe Eksternal */}
+                    <div style={{ marginBottom: '15px', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
+                        <iframe 
+                            src="https://jadwalsholathariini.id/widget/index.php?type=daily&show_selector=true&city=bantul&theme=gradient-modern&lang=id&format=24&school=0&method=20" 
+                            width="100%" 
+                            height="380px" // Tinggi dikurangi agar pas di header
+                            frameBorder="0" 
+                            style={{ border: 'none', overflow: 'hidden' }}
+                            title="Jadwal Sholat Bantul"
+                        ></iframe>
                     </div>
-                ) : <p>Memuat jadwal...</p>}
-            </section>
+
+                    <p style={{ textAlign: 'center', fontSize: '0.8rem', opacity: 0.8 }}>
+                        *Waktu sholat berdasarkan daerah Bantul dan sekitarnya.
+                    </p>
+                </section>
 
             {/* --- SEARCH & MASJID LIST --- */}
             <section id="masjid" className="masjid-section">

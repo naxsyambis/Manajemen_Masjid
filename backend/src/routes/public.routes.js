@@ -17,4 +17,9 @@ router.get('/masjids', async (req, res) => {
     }
 });
 
+// Endpoint kosong untuk berita agar tidak 404
+router.get('/news', async (req, res) => {
+    res.json([]); 
+});
+
 module.exports = router;
