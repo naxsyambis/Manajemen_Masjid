@@ -9,7 +9,7 @@ router.get('/masjids', controller.getAllMasjids);
 router.get('/takmirs', controller.getAllTakmirs);
 router.delete('/takmir/:id', controller.deleteTakmir);
 router.get('/masjid', controller.getMasjidList);
-router.post('/masjid', controller.storeMasjid);
+router.post('/masjid', controller.storeMasjidWithTakmir);
 router.delete('/masjid/:id', controller.deleteMasjid);
 
 // --- TAMBAHKAN DUA BARIS PENTING INI ---
