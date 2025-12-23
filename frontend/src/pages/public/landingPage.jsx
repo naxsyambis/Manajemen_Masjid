@@ -26,12 +26,13 @@ const LandingPage = () => {
         </div>
 
         <nav>
-          <a href="#home">Home</a>
+          <Link to="/">Home</Link>
           <Link to="/masjid" className="hover:text-green-600 transition-colors">Masjid</Link>
           <Link to="/berita" className="hover:text-green-600">Berita</Link>
           <Link to="/profil" className="hover:text-green-600 transition-colors">Profil Organisasi</Link>
           <Link to="/jadwal-sholat" className="hover:text-green-600">Jadwal Sholat</Link>
           <Link to="/login" className="login-btn">Login</Link>
+          
         </nav>
       </header>
 
