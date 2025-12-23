@@ -125,7 +125,7 @@ http://localhost/phpmyadmin
 
 ### 4️⃣ Import Database
 
-1. Pilih database yang telah dibuat https://drive.google.com/file/d/1J5-3Pjvpuc73wbmfv59AGIwrw3JdFhog/view?usp=sharing
+1. Pilih database yang telah dibuat [https://drive.google.com/file/d/1J5-3Pjvpuc73wbmfv59AGIwrw3JdFhog/view?usp=sharing](https://drive.google.com/file/d/1gDFlPFsBHVCuvbJdUVXVesauyiyVYwai/view?usp=sharing)
 2. Klik tab **Import**
 3. Pilih file database berformat **.sql**
 4. Klik **Go**
