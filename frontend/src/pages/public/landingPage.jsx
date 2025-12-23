@@ -27,8 +27,8 @@ const LandingPage = () => {
 
         <nav>
           <a href="#home">Home</a>
-          <a href="#masjid">Masjid</a>
-          <a href="#berita">Berita</a>
+          <Link to="/masjid" className="hover:text-green-600 transition-colors">Masjid</Link>
+          <Link to="/berita" className="hover:text-green-600">Berita</Link>
           <a href="#profil">Profil Organisasi</a>
           <a href="#jadwalsholat">Jadwal Sholat</a>
           <a href="#login">Login</a>

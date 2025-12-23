@@ -41,4 +41,14 @@ router.get('/news', async (req, res) => {
     }
 });
 
+// backend/src/routes/public.routes.js
+router.get('/masjid', async (req, res) => {
+    try {
+        const [rows] = await db.execute('SELECT * FROM masjid ORDER BY nama_masjid ASC');
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;
