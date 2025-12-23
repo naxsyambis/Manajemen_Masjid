@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const MasjidPage = () => {
-  const [masjids, setMasjids] = useState([]);
+    const [masjids, setMasjids] = useState([]);
+    const [search, setSearch] = useState("");
+    const [selectedMasjid, setSelectedMasjid] = useState("");
 
   useEffect(() => {
     // Mengambil data masjid dari API publik
@@ -11,6 +13,13 @@ const MasjidPage = () => {
       .then((res) => setMasjids(res.data))
       .catch((err) => console.error(err));
   }, []);
+
+    // Filter logic untuk pencarian dan select
+    const filteredMasjids = masjids.filter(m => {
+        const matchesSearch = m.nama_masjid.toLowerCase().includes(search.toLowerCase());
+        const matchesSelect = selectedMasjid === "" || m.nama_masjid === selectedMasjid;
+        return matchesSearch && matchesSelect;
+    });
 
   return (
     <div className="bg-gray-50 min-h-screen pt-20">

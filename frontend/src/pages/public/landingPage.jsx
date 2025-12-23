@@ -30,7 +30,7 @@ const LandingPage = () => {
           <Link to="/masjid" className="hover:text-green-600 transition-colors">Masjid</Link>
           <Link to="/berita" className="hover:text-green-600">Berita</Link>
           <Link to="/profil" className="hover:text-green-600 transition-colors">Profil Organisasi</Link>
-          <a href="#jadwalsholat">Jadwal Sholat</a>
+          <Link to="/jadwal-sholat" className="hover:text-green-600">Jadwal Sholat</Link>
           <a href="#login">Login</a>
         </nav>
       </header>

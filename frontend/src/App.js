@@ -14,6 +14,7 @@ import LandingPage from './pages/public/landingPage';
 import NewsPage from './pages/public/newsPage';
 import MasjidPage from './pages/public/masjidPage';
 import ProfilePage from './pages/public/profilePage';
+import SholatPage from './pages/public/sholatPage';
 
 
 
@@ -48,6 +49,8 @@ function App() {
                 <Route path="/masjid" element={<MasjidPage />} />
 
                 <Route path="/profil" element={<ProfilePage />} />
+
+                <Route path="/jadwal-sholat" element={<SholatPage />} />
 
                 <Route 
                     path="/superadmin" 
