@@ -13,6 +13,9 @@ import ManageTakmirAssignment from './pages/superadmin/manageTakmirAssignment';
 import LandingPage from './pages/public/landingPage';
 import NewsPage from './pages/public/newsPage';
 import MasjidPage from './pages/public/masjidPage';
+import ProfilePage from './pages/public/profilePage';
+
+
 
 const ProtectedRoute = ({ children, allowedRole }) => {
     const { user, loading } = useAuth();
@@ -43,6 +46,9 @@ function App() {
                 <Route path="/berita" element={<NewsPage />} />
 
                 <Route path="/masjid" element={<MasjidPage />} />
+
+                <Route path="/profil" element={<ProfilePage />} />
+
                 <Route 
                     path="/superadmin" 
                     element={
